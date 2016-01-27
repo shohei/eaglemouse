@@ -51,6 +51,8 @@
 - (IBAction)	button3dxSettings:	(id)sender;
 - (IBAction)	buttonChangeLabels:	(id)sender;
 
+-(IBAction)sendkeys:(id)sender;
+
 //==============================================================================
 @end
 //==============================================================================

@@ -153,6 +153,22 @@ static void TestDeviceRemovedHandler(unsigned int connection)
 	NSLog(@"Device removed %x", (int)connection);
 }
 
+
+//==============================================================================
+void sendPositiveKeys()
+{
+    NSAppleScript *key = [[NSAppleScript alloc] initWithSource:@"tell application \"System Events\" to key code 126 using {command down, shift down}"];
+    [key executeAndReturnError:nil];
+}
+
+//==============================================================================
+void sendNegativeKeys()
+{
+    NSAppleScript *key = [[NSAppleScript alloc] initWithSource:@"tell application \"System Events\" to key code 125 using {command down, shift down}"];
+    [key executeAndReturnError:nil];
+}
+
+
 //==============================================================================
 
 static void TestMessageHandler(unsigned int connection, natural_t messageType, void *messageArgument)
@@ -171,13 +187,22 @@ static void TestMessageHandler(unsigned int connection, natural_t messageType, v
 			state = (ConnexionDeviceState*)messageArgument;
 			if(state->client == gConnexionTest->fConnexionClientID)
 			{
-				if(state->axis[0] != lastState.axis[0])	[gConnexionTest->mtValueX		setStringValue: [NSString stringWithFormat: @"%d", (int)state->axis[0]]];
-				if(state->axis[1] != lastState.axis[1])	[gConnexionTest->mtValueY		setStringValue: [NSString stringWithFormat: @"%d", (int)state->axis[1]]];
-				if(state->axis[2] != lastState.axis[2])	[gConnexionTest->mtValueZ		setStringValue: [NSString stringWithFormat: @"%d", (int)state->axis[2]]];
-				if(state->axis[3] != lastState.axis[3])	[gConnexionTest->mtValueRx		setStringValue: [NSString stringWithFormat: @"%d", (int)state->axis[3]]];
-				if(state->axis[4] != lastState.axis[4])	[gConnexionTest->mtValueRy		setStringValue: [NSString stringWithFormat: @"%d", (int)state->axis[4]]];
-				if(state->axis[5] != lastState.axis[5])	[gConnexionTest->mtValueRz		setStringValue: [NSString stringWithFormat: @"%d", (int)state->axis[5]]];
-        NSLog(@"Motion state = %i %i %i / %i %i %i", state->axis[0], state->axis[1], state->axis[2], state->axis[3], state->axis[4], state->axis[5]);
+//				if(state->axis[0] != lastState.axis[0])	[gConnexionTest->mtValueX		setStringValue: [NSString stringWithFormat: @"%d", (int)state->axis[0]]];
+//				if(state->axis[1] != lastState.axis[1])	[gConnexionTest->mtValueY		setStringValue: [NSString stringWithFormat: @"%d", (int)state->axis[1]]];
+                if(state->axis[2] != lastState.axis[2])	{
+                [gConnexionTest->mtValueZ		setStringValue: [NSString stringWithFormat: @"%d", (int)state->axis[2]]];
+                    if ((int)state->axis[2] > 0){
+                        sendPositiveKeys();
+                        NSLog(@"positive");
+                    } else if((int)state->axis[2] < 0){
+                        sendNegativeKeys();
+                        NSLog(@"negative");
+                    }
+                }
+//                if(state->axis[3] != lastState.axis[3])[gConnexionTest->mtValueRx		setStringValue: [NSString stringWithFormat: @"%d", (int)state->axis[3]]];
+//				if(state->axis[4] != lastState.axis[4])	[gConnexionTest->mtValueRy		setStringValue: [NSString stringWithFormat: @"%d", (int)state->axis[4]]];
+//				if(state->axis[5] != lastState.axis[5])	[gConnexionTest->mtValueRz		setStringValue: [NSString stringWithFormat: @"%d", (int)state->axis[5]]];
+//        NSLog(@"Motion state = %i %i %i / %i %i %i", state->axis[0], state->axis[1], state->axis[2], state->axis[3], state->axis[4], state->axis[5]);
 
 				if(state->buttons != lastState.buttons)
 				{
